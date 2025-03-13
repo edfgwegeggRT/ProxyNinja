@@ -52,9 +52,6 @@ const ProxyForm: React.FC<ProxyFormProps> = ({ onSubmit }) => {
 };
 
 export default ProxyForm;
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 interface ProxyFormProps {
   onSubmit: (url: string) => void;
