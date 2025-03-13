@@ -131,6 +131,21 @@
 
 .animate-glow {
   animation: glow 1.5s ease-in-out infinite alternate;
+  position: relative;
+  z-index: 1;
+}
+
+.animate-glow::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  z-index: -1;
+  animation: pulse 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  opacity: 0.7;
 }
 
 @keyframes glow {
@@ -142,9 +157,30 @@
   }
 }
 
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 7, 58, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(255, 7, 58, 0);
+  }
+}
+
 .proxy-iframe {
   width: 100%;
-  height: calc(100vh - 200px);
-  min-height: 500px;
+  height: calc(100vh - 250px);
+  min-height: 600px;
   border: none;
+  background-color: #111;
+  transition: all 0.3s ease;
+}
+
+/* Style the search box */
+#uv-address {
+  transition: all 0.3s ease;
+}
+
+#uv-address:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255, 7, 58, 0.3);
 }

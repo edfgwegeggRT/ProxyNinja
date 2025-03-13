@@ -42,11 +42,23 @@ export type ProxyRequest = typeof proxyRequests.$inferSelect;
 export const urlSchema = z.object({
   url: z
     .string()
-    .url("Please enter a valid URL")
     .refine(
-      (url) => url.startsWith("http://") || url.startsWith("https://"),
+      (url) => {
+        // If it's already a valid URL with http/https, accept it
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+          try {
+            new URL(url);
+            return true;
+          } catch {
+            return false;
+          }
+        }
+        
+        // Otherwise, treat it as a search query
+        return true;
+      },
       {
-        message: "URL must begin with http:// or https://",
+        message: "Please enter a valid URL or search query",
       }
     ),
 });

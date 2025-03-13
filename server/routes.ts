@@ -21,7 +21,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const { url } = validation.data;
+      let { url } = validation.data;
+      
+      // Check if input is a URL or a search query
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        // Default search engine template for DuckDuckGo
+        const searchEngine = "https://duckduckgo.com/?t=h_&q=%s&ia=web";
+        
+        // Replace %s in the search engine URL with the encoded query
+        url = searchEngine.replace('%s', encodeURIComponent(url));
+      }
       
       // Create a proxy URL for the requested site
       const proxyUrl = createProxyUrl(url);
