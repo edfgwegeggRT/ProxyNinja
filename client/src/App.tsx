@@ -4,6 +4,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
+import React, { useState } from 'react';
+import Hero from './components/Hero';
+import Features from './components/Features';
+import ProxyForm from './components/ProxyForm';
+import Footer from './components/Footer';
+import ProxyContent from './components/ProxyContent';
 
 interface AppProps {
   isStaticEnvironment: boolean;
@@ -20,35 +26,14 @@ function Router({ isStaticEnvironment }: { isStaticEnvironment: boolean }) {
   );
 }
 
-function App({ isStaticEnvironment }: AppProps) {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <Router isStaticEnvironment={isStaticEnvironment} />
-      <Toaster />
-    </QueryClientProvider>
-  );
-}
-
-export default App;
-import React, { useState } from 'react';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import ProxyForm from './components/ProxyForm';
-import Footer from './components/Footer';
-import ProxyContent from './components/ProxyContent';
-
-interface AppProps {
-  isStaticEnvironment: boolean;
-}
-
-function App({ isStaticEnvironment }: AppProps) {
+export default function App({ isStaticEnvironment }: AppProps) {
   const [proxyUrl, setProxyUrl] = useState<string | null>(null);
   const [originalUrl, setOriginalUrl] = useState<string>('');
-  
+
   const handleProxySubmit = (url: string) => {
     // Store the original URL for display purposes
     setOriginalUrl(url);
-    
+
     if (isStaticEnvironment) {
       // For Netlify: use Netlify function
       const encodedUrl = encodeURIComponent(url);
@@ -59,12 +44,12 @@ function App({ isStaticEnvironment }: AppProps) {
       setProxyUrl(`/api/proxy?url=${encodedUrl}`);
     }
   };
-  
+
   const handleCloseProxy = () => {
     setProxyUrl(null);
     setOriginalUrl('');
   };
-  
+
   const handleRefreshProxy = () => {
     // Re-trigger the proxy with the same URL
     if (originalUrl) {
@@ -76,9 +61,9 @@ function App({ isStaticEnvironment }: AppProps) {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black text-white">
       <div className="container mx-auto px-4 py-8">
         <Hero />
-        
+
         {proxyUrl ? (
-          <ProxyContent 
+          <ProxyContent
             proxyUrl={proxyUrl}
             originalUrl={originalUrl}
             onClose={handleCloseProxy}
@@ -90,11 +75,9 @@ function App({ isStaticEnvironment }: AppProps) {
             <Features />
           </>
         )}
-        
+
         <Footer />
       </div>
     </div>
   );
 }
-
-export default App;
