@@ -61,3 +61,61 @@ exports.handler = async (event, context) => {
     };
   }
 };
+const https = require('https');
+const http = require('http');
+const url = require('url');
+
+exports.handler = async function(event, context) {
+  // Get the URL from the query parameter
+  const targetUrl = event.queryStringParameters.url;
+  
+  if (!targetUrl) {
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'URL parameter is required' })
+    };
+  }
+  
+  try {
+    // Parse the URL to determine if it's HTTP or HTTPS
+    const parsedUrl = url.parse(targetUrl);
+    const protocol = parsedUrl.protocol === 'https:' ? https : http;
+    
+    // Make a request to the target URL
+    const response = await new Promise((resolve, reject) => {
+      const req = protocol.get(targetUrl, (res) => {
+        let body = '';
+        res.on('data', (chunk) => body += chunk);
+        res.on('end', () => {
+          resolve({
+            statusCode: res.statusCode,
+            headers: res.headers,
+            body
+          });
+        });
+      });
+      
+      req.on('error', (error) => {
+        reject(error);
+      });
+      
+      req.end();
+    });
+    
+    // Return the response with appropriate headers
+    return {
+      statusCode: response.statusCode,
+      headers: {
+        'Content-Type': response.headers['content-type'] || 'text/html',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type'
+      },
+      body: response.body
+    };
+  } catch (error) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: error.message })
+    };
+  }
+}

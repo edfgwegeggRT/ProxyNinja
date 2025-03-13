@@ -18,7 +18,7 @@ export const ProxyContent: React.FC<ProxyContentProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   
-  // Format the display URL to enhance readability and security indication
+  // Format the display URL to enhance readability
   const displayUrl = originalUrl
     .replace(/^https?:\/\//, '')
     .replace(/^www\./, '');
@@ -58,40 +58,37 @@ export const ProxyContent: React.FC<ProxyContentProps> = ({
 
   return (
     <div className="border border-primary/30 rounded-lg overflow-hidden mb-8">
-      {/* URL Display and Controls */}
-      <div className="flex items-center justify-between p-4 bg-black border-b border-primary/30">
-        <div className="flex items-center space-x-2">
-          <div className="text-primary">
-            <i className="ri-earth-line"></i>
-          </div>
-          <div className="text-sm font-mono opacity-70 truncate max-w-[200px] md:max-w-md">
-            {displayUrl}
-          </div>
+      {/* Proxy Info Bar */}
+      <div className="bg-gray-800 p-3 flex items-center justify-between">
+        <div className="flex items-center flex-grow mr-4 overflow-hidden">
+          <span className="text-primary mr-2">🔒</span>
+          <span className="truncate text-sm font-mono">{displayUrl}</span>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex space-x-2">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={onRefresh}
-            className="text-primary"
+            className="text-gray-300 hover:text-white"
           >
-            <i className="ri-refresh-line"></i>
+            <i className="ri-refresh-line mr-1"></i> Refresh
           </Button>
           <Button 
             variant="ghost" 
-            size="sm"
+            size="sm" 
             onClick={toggleFullscreen}
-            className="text-primary"
+            className="text-gray-300 hover:text-white"
           >
-            <i className={`ri-${isFullscreen ? 'fullscreen-exit' : 'fullscreen'}-line`}></i>
+            <i className={`ri-${isFullscreen ? 'fullscreen-exit' : 'fullscreen'}-line mr-1`}></i>
+            {isFullscreen ? 'Exit' : 'Full'}
           </Button>
           <Button 
             variant="ghost" 
-            size="sm"
+            size="sm" 
             onClick={onClose}
-            className="text-primary"
+            className="text-gray-300 hover:text-white"
           >
-            <i className="ri-close-line"></i>
+            <i className="ri-close-line mr-1"></i> Close
           </Button>
         </div>
       </div>
@@ -110,5 +107,3 @@ export const ProxyContent: React.FC<ProxyContentProps> = ({
     </div>
   );
 };
-
-export default ProxyContent;
