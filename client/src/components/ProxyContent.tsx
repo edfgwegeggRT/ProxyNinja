@@ -1,81 +1,95 @@
-import React, { useState, useRef } from 'react';
+
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 
 interface ProxyContentProps {
-  displayUrl: string;
   proxyUrl: string;
-  onRefresh: () => void;
+  originalUrl: string;
   onClose: () => void;
+  onRefresh: () => void;
 }
 
-const ProxyContent: React.FC<ProxyContentProps> = ({
-  displayUrl,
+export const ProxyContent: React.FC<ProxyContentProps> = ({
   proxyUrl,
-  onRefresh,
+  originalUrl,
   onClose,
+  onRefresh
 }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   
-  const toggleFullscreen = async () => {
-    if (isFullscreen) {
-      // Exit fullscreen
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
+  // Format the display URL to enhance readability and security indication
+  const displayUrl = originalUrl
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '');
+  
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      // If we're not in fullscreen mode, request it
+      if (iframeRef.current?.requestFullscreen) {
+        iframeRef.current.requestFullscreen().catch(err => {
+          console.error(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      }
+      setIsFullscreen(true);
+    } else {
+      // If we are in fullscreen mode, exit it
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => {
+          console.error(`Error attempting to exit fullscreen: ${err.message}`);
+        });
       }
       setIsFullscreen(false);
-    } else {
-      // Enter fullscreen
-      const iframeElement = iframeRef.current;
-      if (iframeElement) {
-        try {
-          await iframeElement.requestFullscreen();
-          setIsFullscreen(true);
-        } catch (err) {
-          console.error("Fullscreen error:", err);
-        }
-      }
     }
   };
+  
+  // Listen for fullscreen change events
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, []);
 
   return (
     <div className="border border-primary/30 rounded-lg overflow-hidden mb-8">
-      {/* URL Display Bar */}
-      <div className="bg-black border-b border-primary/30 p-3 flex items-center justify-between">
-        <div className="flex items-center flex-1 overflow-hidden">
-          <span className="text-primary mr-2">
-            <i className="ri-shield-check-line"></i>
-          </span>
-          <div 
-            className="font-mono text-sm truncate flex-1"
-            dangerouslySetInnerHTML={{ __html: displayUrl }}
-          />
+      {/* URL Display and Controls */}
+      <div className="flex items-center justify-between p-4 bg-black border-b border-primary/30">
+        <div className="flex items-center space-x-2">
+          <div className="text-primary">
+            <i className="ri-earth-line"></i>
+          </div>
+          <div className="text-sm font-mono opacity-70 truncate max-w-[200px] md:max-w-md">
+            {displayUrl}
+          </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center space-x-2">
           <Button 
             variant="ghost" 
-            size="icon"
-            onClick={toggleFullscreen}
-            className="text-muted-foreground hover:text-primary transition-colors p-1"
-            title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-          >
-            <i className={isFullscreen ? "ri-fullscreen-exit-line" : "ri-fullscreen-line"}></i>
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="icon"
+            size="sm" 
             onClick={onRefresh}
-            className="text-muted-foreground hover:text-primary transition-colors p-1"
-            title="Refresh"
+            className="text-primary"
           >
             <i className="ri-refresh-line"></i>
           </Button>
           <Button 
             variant="ghost" 
-            size="icon"
+            size="sm"
+            onClick={toggleFullscreen}
+            className="text-primary"
+          >
+            <i className={`ri-${isFullscreen ? 'fullscreen-exit' : 'fullscreen'}-line`}></i>
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm"
             onClick={onClose}
-            className="text-muted-foreground hover:text-primary transition-colors p-1"
-            title="Close"
+            className="text-primary"
           >
             <i className="ri-close-line"></i>
           </Button>
@@ -83,26 +97,15 @@ const ProxyContent: React.FC<ProxyContentProps> = ({
       </div>
       
       {/* Proxy Iframe Container */}
-      <div className="bg-black">
+      <div className="bg-black relative" style={{ height: '500px' }}>
         <iframe 
           ref={iframeRef}
           src={proxyUrl}
-          className="proxy-iframe"
+          className="w-full h-full border-0"
           sandbox="allow-scripts allow-same-origin allow-forms" 
           title="Proxied Content"
           allowFullScreen
-        ></iframe>
-      </div>
-      
-      {/* Fullscreen Access Button */}
-      <div className="bg-black border-t border-primary/30 p-3 flex justify-center">
-        <Button 
-          variant="default"
-          onClick={toggleFullscreen}
-          className="bg-primary hover:bg-primary/80 text-black font-bold animate-glow"
-        >
-          {isFullscreen ? "Exit Fullscreen" : "Access Fullscreen"}
-        </Button>
+        />
       </div>
     </div>
   );

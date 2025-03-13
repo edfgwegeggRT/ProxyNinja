@@ -2,42 +2,52 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add specific styles for the proxy iframe */
+.proxy-iframe {
+  width: 100%;
+  height: 500px;
+  border: 0;
+  display: block;
+}
+
+/* Add glow animation for buttons */
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s infinite;
+}
+
 @layer base {
   :root {
-    --background: 0 0% 0%;
-    --foreground: 0 0% 100%;
-    
-    --card: 0 0% 2%;
-    --card-foreground: 0 0% 100%;
-    
-    --popover: 0 0% 2%;
-    --popover-foreground: 0 0% 100%;
-    
-    --primary: 347 100% 50%;
-    --primary-foreground: 0 0% 100%;
-    
-    --secondary: 347 100% 40%;
-    --secondary-foreground: 0 0% 100%;
-    
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 70%;
-    
-    --accent: 347 100% 50%;
-    --accent-foreground: 0 0% 100%;
-    
-    --destructive: 0 100% 40%;
-    --destructive-foreground: 0 0% 100%;
-    
-    --border: 347 80% 30%;
-    --input: 0 0% 15%;
-    --ring: 347 100% 50%;
-    
-    --chart-1: 347 100% 50%;
-    --chart-2: 347 80% 40%;
-    --chart-3: 347 60% 30%;
-    --chart-4: 347 40% 20%;
-    --chart-5: 347 20% 10%;
-    
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
     --radius: 0.5rem;
   }
 }
