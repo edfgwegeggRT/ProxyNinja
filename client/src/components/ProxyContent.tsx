@@ -107,9 +107,8 @@ export const ProxyContent: React.FC<ProxyContentProps> = ({
     </div>
   );
 };
-import React, { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import ErrorDisplay from './ErrorDisplay';
+
+export default ProxyContent;y';
 
 interface ProxyContentProps {
   proxyUrl: string;
