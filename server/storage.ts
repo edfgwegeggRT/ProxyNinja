@@ -46,7 +46,14 @@ export class MemStorage implements IStorage {
   
   async logProxyRequest(request: InsertProxyRequest): Promise<void> {
     const id = this.currentProxyId++;
-    const proxyRequest: ProxyRequest = { ...request, id };
+    // Ensure all required properties are properly set with correct types
+    const proxyRequest: ProxyRequest = { 
+      ...request, 
+      id,
+      userId: request.userId ?? null,
+      success: request.success ?? true,
+      errorMessage: request.errorMessage ?? null
+    };
     this.proxyRequests.push(proxyRequest);
     // Log to console for debugging
     console.log(`Proxy request logged: ${request.url}, success: ${request.success}`);
